@@ -20,5 +20,15 @@ def home():
 	# Sessione non ancora implementata
 	return render_template("home.html", utente = utente)
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    # Qui va la logica di login (form, autenticazione, ecc.)
+    return render_template("login.html")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    # Qui va la logica di registrazione (form, salvataggio utente, ecc.)
+    return render_template("register.html")
+
 cursor.close()
 conn.close()
