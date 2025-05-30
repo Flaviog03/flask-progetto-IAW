@@ -1,0 +1,16 @@
+# Ambiente virtuale
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# File temporanei
+*.db-journal
+
+# Mac OS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
