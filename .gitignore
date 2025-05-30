@@ -8,6 +8,12 @@ __pycache__/
 # File temporanei
 *.db-journal
 
+# File di progetto
+*.er
+
+# File contenenti info sul db
+*.db
+
 # Mac OS
 .DS_Store
 
