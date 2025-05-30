@@ -1,6 +1,9 @@
 # Ambiente virtuale
 venv/
 
+# Cartella per la progettazione
+progettazione/
+
 # Python cache
 __pycache__/
 *.py[cod]
