@@ -1,0 +1,51 @@
+.color-coral{
+    background-color: #FF6B6B !important;
+    color: white !important;
+}
+
+#login_form h3,
+#passwordHelpBlock,
+label{
+  color: #3D348B;
+  font-weight: bold;
+}
+
+#login_form h3{
+    border-bottom: #3D348B;
+}
+
+input[type="email"],
+input[type="password"]{
+    background-color: #FFFDF9;
+    border-color: #2C8C99;
+
+}
+
+.border-color-oceanblue{
+    border-color: #2C8C99;
+}
+
+.btn:hover{
+    background-color: #FF924C !important;
+    color: white !important;
+    transition: background-color 0.5s;
+}
+
+.bg-sand{
+    background-color: #FFF4D6;
+}
+
+.navbar{
+    background-color: #FFF4D6; /* sabbia chiara */
+    color: #3D348B; /* indaco profondo */
+    border-bottom: 2px solid #FF924C; /* linea sottile arancio tramonto */
+}
+
+/* Questa regola aggiunge il margine sinistro solo agli elementi .nav-item che seguono un altro .nav-item (quindi non al primo). */
+.navbar-nav.flex-row .nav-item + .nav-item {
+    margin-left: 1rem; /* equivalente a ms-3 */
+}
+
+body{
+    background-color: #FDF6EC !important;
+}
