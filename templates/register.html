@@ -1,7 +1,54 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <!--
-        FORM
-    -->
+    <form action="{{ url_for('register') }}", method="post" id="registration_form" class="border border-5 rounded p-5 my-5 mx-auto w-75 border-color-oceanblue shadow-sm bg-sand">
+        <div class="container">
+            <div class="d-block mb-4">
+                <div class="row">
+                    <div class="col"><h3> Registration Form </h3></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="email" class="form-label">Indirizzo email</label>
+                        <input type="email" name="email" class="form-control" id="email" placeholder="nome@esempio.com" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" aria-describedby="passwordHelpBlock" pattern="^[A-Za-z0-9]{8,20}$" required minlength="8" maxlength="20">
+                        <div id="passwordHelpBlock" class="form-text">
+                        La password deve essere lunga da 8 a 20 caratteri, contenere lettere e numeri e non deve contenere spazi, caratteri speciali o emoji.
+                        </div>
+                    </div>
+                </div>    
+                <div class="row">
+                    <div class="col">
+                        <label for="nome" class="form-label">Nome</label>
+                        <input type="text" name="nome" id="nome" class="form-control" placeholder="Inserisci il tuo nome" required>
+                    </div>
+                    <div class="col">
+                        <label for="cognome" class="form-label">Cognome</label>
+                        <input type="text" name="cognome" id="cognome" class="form-control" placeholder="Inserisci il tuo cognome" required>
+                    </div>
+                    <div class="col">
+                        <label for="ruolo" class="form-label">Ruolo</label>
+                        <select name="ruolo" id="ruolo" class="form-control select" form="registration_form">
+                            {% for ruolo in p_ruoli %}
+                                <option value="{{ ruolo | e }}">{{ ruolo | e | lower}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div> 
+            </div>
+            <div class="d-inline">
+                <div class="row gx-5">
+                    <div class="col">
+                        <input type="submit" class="btn btn-lg color-coral me-2"> 
+                        <input type="reset" class="btn btn-lg color-coral">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock %}
