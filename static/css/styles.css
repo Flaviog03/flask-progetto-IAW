@@ -3,6 +3,7 @@
     color: white !important;
 }
 
+#user_profile h3,
 #registration_form h3,
 #login_form h3,
 #passwordHelpBlock,
@@ -11,9 +12,10 @@ label{
   font-weight: bold;
 }
 
+#user_profile h3,
 #registration_form h3,
 #login_form h3{
-    border-bottom: #3D348B;
+    border-bottom: #3D348B !important;
 }
 
 

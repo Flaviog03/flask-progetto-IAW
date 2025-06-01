@@ -1,5 +1,7 @@
 import re   # Modulo per le regex
 
+ALLOWED_EXTENSIONS = {'jpg'}
+
 class InputError:
     NOME_OBBLIGATORIO = "nome_obbligatorio"
     COGNOME_OBBLIGATORIO = "cognome_obbligatorio"
@@ -47,3 +49,6 @@ def validateLoginForm(form):
     if not password or not re.match(password_pattern, password):
         errors.append(InputError.PASSWORD_NON_VALIDA)
     return errors
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

@@ -1,0 +1,44 @@
+<section class="container" id="user_profile">
+    <div class="row border border-5 rounded p-4 my-5 mx-auto w-100 align-items-center">
+        <div class="col-3 border-2 border-end pe-0">
+            <img src="{{ url_for('static', filename='images/' ~ current_user.percorso_immagine) }}"
+                class="img-fluid img-thumbnail w-75" alt="profile image">
+        </div>
+        <div class="col">
+            <div class="container ms-5">
+                <div class="row">
+                    <h3>Profilo Utente</h3>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="nome">Nome</label>
+                        <p id="nome">{{ current_user.nome }}</p>
+                    </div>
+                    <div class="col">
+                        <label for="cognome">Cognome</label>
+                        <p id="cognome">{{ current_user.cognome }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="email">Email</label>
+                        <p id="email">{{ current_user.email }}</p>
+                    </div>
+                    <div class="col">
+                        <label for="ruolo">Ruolo</label>
+                        <p id="ruolo">{{ current_user.ruolo }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <form method="POST" enctype="multipart/form-data" action="{{ url_for('aggiorna_immagine') }}">
+                        <label for="file" class="form-label">Nuova immagine</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="file" name="file" id="file" accept="image/jpg" class="form-control w-50">
+                            <input type="submit" class="btn btn-primary color-coral" value="Carica">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
