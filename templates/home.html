@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Benvenuto su SoundWaves TP!</h1>
-  <!-- Altri contenuti della home -->
+  <div class="container">
+    <h1>Benvenuto su SoundWaves TP!</h1>
+    <p>Questa è la homepage del festival.</p>
+    {% if current_user.is_authenticated %}
+      <p> Utente loggato: {{ current_user.nome }} </p>
+    {% else %}
+      <p> Non sei loggato. </p>
+    {% endif %}
+  </div>
 {% endblock %}
 
