@@ -3,6 +3,7 @@
     color: white !important;
 }
 
+#registration_form h3,
 #login_form h3,
 #passwordHelpBlock,
 label{
@@ -10,15 +11,18 @@ label{
   font-weight: bold;
 }
 
+#registration_form h3,
 #login_form h3{
     border-bottom: #3D348B;
 }
 
-input[type="email"],
-input[type="password"]{
-    background-color: #FFFDF9;
-    border-color: #2C8C99;
 
+input[type="email"],
+input[type="password"],
+input[type="text"],
+.select{
+    background-color: #FFFDF9 !important;
+    border-color: #2C8C99 !important;
 }
 
 .border-color-oceanblue{
