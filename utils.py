@@ -1,6 +1,8 @@
 import re   # Modulo per le regex
+from datetime import datetime, timedelta
 
 ALLOWED_EXTENSIONS = {'jpg'}
+MAX_BIGLIETTI_PER_GIORNO = 200
 
 class InputError:
     NOME_OBBLIGATORIO = "nome_obbligatorio"
@@ -52,3 +54,40 @@ def validateLoginForm(form):
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def checkIfDayTicketAveilable(row):
+    if row["numeroBiglietti"] < MAX_BIGLIETTI_PER_GIORNO:
+        return True
+    return False
+
+def checkIfArtistExists(artistsList, artistName):
+    if artistName in artistsList:
+        return True
+    return False
+
+# Metodo visibile solo all'interno di utils
+def __evaluatePerformanceEndTime(oraInizio, durata):
+    # 1. Converti ora_inizio in oggetto datetime (senza data)
+    inizio = datetime.strptime(oraInizio, "%H:%M")
+
+    # 2. Aggiungi la durata come timedelta
+    fine = inizio + timedelta(minutes=int(durata))
+
+    # 3. Converti l'orario finale di nuovo in stringa
+    ora_fine = fine.strftime("%H:%M")
+
+    return ora_fine
+
+def __durationOverlapping(t1_i, t1_f, t2_i, t2_f):
+    if t1_i < t2_f and t2_i < t1_f:
+        return True
+    return False
+
+# Controllo su Giorno, Ora, Durata, Palco
+def checkOverlappingPerformances(performancesList, performance):
+    for p in performancesList:
+        if p["Giorno"] == performance.giorno:
+            if p["Palco"] == performance.palco:
+                if __durationOverlapping(p["Ora"], __evaluatePerformanceEndTime(p["Ora"], p["Durata"]), performance.ora, __evaluatePerformanceEndTime(performance.ora, performance.durata)):
+                    return True
+    return False

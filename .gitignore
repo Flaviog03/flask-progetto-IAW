@@ -4,6 +4,9 @@ venv/
 # Cartella per la progettazione
 progettazione/
 
+# File jpg
+*.jpg
+
 # Python cache
 __pycache__/
 *.py[cod]

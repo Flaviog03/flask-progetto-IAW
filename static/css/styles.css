@@ -3,13 +3,11 @@
     color: white !important;
 }
 
-#user_profile h3,
-#registration_form h3,
-#login_form h3,
 #passwordHelpBlock,
+h3,
 label{
-  color: #3D348B;
-  font-weight: bold;
+  color: #3D348B !important;
+  font-weight: bold !important;
 }
 
 #user_profile h3,
@@ -23,8 +21,12 @@ input[type="email"],
 input[type="password"],
 input[type="text"],
 .select{
-    background-color: #FFFDF9 !important;
-    border-color: #2C8C99 !important;
+    background-color: #FFFDF9;
+    border-color: #2C8C99;
+}
+
+.generic-input{
+    background-color: #FFFFFF !important;
 }
 
 .border-color-oceanblue{

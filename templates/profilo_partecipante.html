@@ -2,7 +2,80 @@
 
 {% block content %}
     {% include "partials/profile_info.html" with context %}
-    <section>
-        
+    <section class="container border border-5 rounded p-4 my-5 mx-auto w-100 align-items-center">
+        <div class="row">
+            <h3> Biglietti acquistati </h3>
+        </div>
+        <div class="row">
+            {% if p_biglietto %}
+                {% for key in p_biglietto.keys() %}
+                    <div class="col">
+                        <label for="element">{{ key.replace('_', ' ') }}</label>
+                        <p id="element">{{ p_biglietto[key] }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p> Nessun biglietto acquistato </p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="container border border-5 rounded p-4 mx-auto w-100 align-items-center">
+        <div class="row">
+            <h3> Acquista qui il tuo biglietto </h3>
+        </div>
+        <div class="row">
+            {% if infoBiglietti %}
+                {% for info in infoBiglietti %}
+                    <div class="col">
+                        <div class="card mb-4 rounded-3 shadow-sm h-100">
+                            <div class="card-header py-3"> 
+                                <h4 class="my-0 fw-normal"> {{ info[1] }} </h4> 
+                            </div> 
+                            <form action="{{ url_for('acquista_biglietto') }}" method="post" id="buyTickets{{ loop.index }}">
+                                <input type="hidden" name="tipo_biglietto" value="{{ info[1] }}">
+                                <input type="hidden" name="prezzo" value="{{ info[0] }}">
+                                <div class="card-body d-flex flex-column h-100">
+                                    <h1 class="card-title pricing-card-title"> € {{ info[0] }} </h1>
+                                    <ul class="list-unstyled mt-3 mb-4">
+                                        {% if info[1] == "2 Giorni" %}
+                                            <li class="mb-3"> Ingresso per due giorni consecutivi </li> 
+                                            <li>
+                                                <label for="giornoSelezionato{{ loop.index }}" class="form-label"> Seleziona il giorno di inizio </label>
+                                                <select id="giornoSelezionato{{ loop.index }}" name="giornoSelezionato" class="form-control">
+                                                    <option value="Venerdì"> Venerdì </option>
+                                                    <option value="Sabato"> Sabato </option>
+                                                </select>
+                                            </li>
+                                        {% elif info[1] == "Full Pass" %}
+                                            <li class="mb-3"> Ingresso per tutti i giorni del festival! </li> 
+                                            <li>
+                                                <label for="giornoSelezionato{{ loop.index }}" class="form-label"> Seleziona il giorno di inizio </label>
+                                                <select id="giornoSelezionato{{ loop.index }}" name="giornoSelezionato" class="form-control" disabled>
+                                                    <option value="Venerdì" selected> Venerdì </option>
+                                                    <option value="Sabato"> Sabato </option>
+                                                    <option value="Domenica"> Domenica </option>
+                                                </select>
+                                            </li>
+                                        {% else %} 
+                                            <li class="mb-3"> Ingresso giornaliero </li> 
+                                            <li>
+                                                <label for="giornoSelezionato{{ loop.index }}" class="form-label"> Seleziona il giorno di inizio </label>
+                                                <select id="giornoSelezionato{{ loop.index }}" name="giornoSelezionato" class="form-control">
+                                                    <option value="Venerdì"> Venerdì </option>
+                                                    <option value="Sabato"> Sabato </option>
+                                                    <option value="Domenica"> Domenica </option>
+                                                </select>
+                                            </li>
+                                        {% endif %}
+                                    </ul> 
+                                    <button type="submit" class="w-100 mt-auto btn btn-lg btn-outline-primary color-coral">Acquista</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
     </section>
 {% endblock %}
