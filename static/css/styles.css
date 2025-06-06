@@ -5,6 +5,8 @@
 
 #passwordHelpBlock,
 h3,
+h4, 
+h5,
 label{
   color: #3D348B !important;
   font-weight: bold !important;
@@ -16,13 +18,15 @@ label{
     border-bottom: #3D348B !important;
 }
 
+.bg-custom-light {
+    background-color: #f3eee7; /* un beige più scuro rispetto a #fdf6ec */
+}
 
 input[type="email"],
 input[type="password"],
 input[type="text"],
 .select{
     background-color: #FFFDF9;
-    border-color: #2C8C99;
 }
 
 .textarea{
@@ -56,6 +60,10 @@ input[type="text"],
 /* Questa regola aggiunge il margine sinistro solo agli elementi .nav-item che seguono un altro .nav-item (quindi non al primo). */
 .navbar-nav.flex-row .nav-item + .nav-item {
     margin-left: 1rem; /* equivalente a ms-3 */
+}
+
+.profile-img-250px{
+    max-width: 250px !important;
 }
 
 body{

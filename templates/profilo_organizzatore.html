@@ -3,7 +3,7 @@
 {% block content %}
     {% include "partials/profile_info.html" with context %}
 
-    <article class="container border border-5 rounded w-100" id="bozze">
+    <article class="container border border-5 rounded w-100 bg-light" id="bozze">
         <section class="container mt-3 border-bottom border-3 pb-3">
             <div class="row w-100">
                 <div class="col-md-6 d-flex justify-content-center">
@@ -48,15 +48,13 @@
         </section>
     </article>
     
-    <article class="container border border-5 rounded p-4 my-5 mx-auto w-100 align-items-center" id="performance-pubbliche">
+    <article class="container border border-5 rounded p-4 my-5 mx-auto w-100 align-items-center bg-light" id="performance-pubbliche">
         <h3 class="border-bottom border-3 p-2"> Performance pubbliche </h3>
         <!-- Public Performances -->
         <section class="container mt-3">
             {% for pubPerf in publicPerformances %}
-                <div class="shadow-sm p-4">
-                    {% set indx = loop.index0 %}
-                    {% include "partials/PublicPerformance.html" with context %}
-                </div>
+                {% set indx = loop.index0 %}
+                {% include "partials/PublicPerformance.html" with context %}
             {% endfor %}
         </section>
     </article>
@@ -70,13 +68,13 @@
         <div class="col">
             <div class="card h-100 text-center border-0 shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title fw-bold">{{ stat["Giorno"] }}</h5>
-                    <p class="card-text fs-4 text-primary">
+                    <h5 class="card-title fw-bold text-primary">{{ stat["Giorno"] }}</h5>
+                    <p class="card-text fs-4 text-warning-emphasis">
                         {{ stat["BigliettiVenduti"] }} biglietti venduti
                     </p>
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <span class="badge bg-primary bg-opacity-75">SoundWaves TP</span>
+                    <span class="badge color-coral">SoundWaves TP</span>
                 </div>
             </div>
         </div>

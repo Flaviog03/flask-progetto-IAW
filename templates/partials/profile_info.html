@@ -1,44 +1,50 @@
-<section class="container border border-5 rounded p-4 my-5 mx-auto w-100 align-items-center" id="user_profile">
-    <div class="row">
-        <div class="col-3 border-2 border-end pe-0 col d-flex justify-content-center align-items-center">
-            <img src="{{ url_for('static', filename='images/' ~ current_user.percorso_immagine) }}"
-                class="img-fluid img-thumbnail w-75" alt="profile image">
+<section class="container my-4">
+  <div class="card shadow-sm border-0 rounded-4 p-3 p-md-4">
+    <div class="row g-4 align-items-center flex-column flex-lg-row">
+      
+      <!-- Immagine profilo -->
+      <div class="col-lg-4 text-center">
+        <img src="{{ url_for('static', filename='images/' ~ current_user.percorso_immagine) }}"
+             class="img-fluid rounded-circle border border-2 shadow-sm profile-img-250px"
+             alt="Immagine profilo">
+      </div>
+
+      <!-- Dati utente -->
+      <div class="col-md-8">
+        <h5 class="fw-bold mb-3 text-center text-md-start">Profilo Utente</h5>
+
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <label class="form-label text-muted">Nome</label>
+            <p class="form-control-plaintext mb-0">{{ current_user.nome }}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted">Cognome</label>
+            <p class="form-control-plaintext mb-0">{{ current_user.cognome }}</p>
+          </div>
         </div>
-        <div class="col">
-            <div class="container ms-5">
-                <div class="row">
-                    <h3>Profilo Utente</h3>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <label for="nome">Nome</label>
-                        <p id="nome">{{ current_user.nome }}</p>
-                    </div>
-                    <div class="col">
-                        <label for="cognome">Cognome</label>
-                        <p id="cognome">{{ current_user.cognome }}</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <label for="email">Email</label>
-                        <p id="email">{{ current_user.email }}</p>
-                    </div>
-                    <div class="col">
-                        <label for="ruolo">Ruolo</label>
-                        <p id="ruolo">{{ current_user.ruolo }}</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <form method="POST" enctype="multipart/form-data" action="{{ url_for('aggiorna_immagine') }}">
-                        <label for="file" class="form-label">Nuova immagine</label>
-                        <div class="d-flex align-items-center gap-2">
-                            <input type="file" name="file" id="file" accept="image/jpg" class="form-control w-50">
-                            <input type="submit" class="btn btn-primary color-coral" value="Carica">
-                        </div>
-                    </form>
-                </div>
-            </div>
+
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <label class="form-label text-muted">Email</label>
+            <p class="form-control-plaintext mb-0">{{ current_user.email }}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted">Ruolo</label>
+            <p class="form-control-plaintext mb-0">{{ current_user.ruolo }}</p>
+          </div>
         </div>
+
+        <!-- Upload immagine -->
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('aggiorna_immagine') }}" class="mt-3">
+          <label for="file" class="form-label fw-semibold">Cambia immagine</label>
+          <div class="input-group">
+            <input type="file" name="file" id="file" accept="image/jpg" class="form-control">
+            <button type="submit" class="btn btn-outline-primary color-coral">Carica</button>
+          </div>
+        </form>
+      </div>
     </div>
+    
+  </div>
 </section>
