@@ -1,0 +1,98 @@
+<form method="post" action="{{ url_for('nuova_bozza') }}" enctype="multipart/form-data" class="border rounded p-4 shadow-sm">
+    <input type="hidden" name="idPerformance" value="{{ pp.performanceID }}">
+
+    <div class="row g-3 mb-3">
+        <!-- Carosello -->
+        <div class="col-md-3">
+            <div id="carouselArtista_{{ index }}" class="carousel slide">
+                <div class="carousel-inner">
+                    {% for img_path in pp["ImmaginiArtista"] %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <img src="{{ url_for('static', filename='images/artists/' ~ img_path) }}" class="img-fluid img-thumbnail w-100 rounded shadow-sm" alt="profile image">
+                    </div>
+                    {% endfor %}
+                </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselArtista_{{ index }}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselArtista_{{ index }}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <!-- Descrizione -->
+        <div class="col-md-9 mh-100 d-flex flex-column">
+            <label for="descrizione_{{ index }}" class="form-label">Descrizione</label>
+            <textarea id="descrizione_{{ index }}" name="descrizione" class="form-control flex-grow-1 textarea" placeholder="Scrivi qui la tua descrizione" required>{{ pp["Descrizione"] }}</textarea>
+        </div>
+    </div>
+    
+    <!-- Prima riga: Nome artista, Giorno, Ora, Durata -->
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label for="nomeArtista_{{ index }}" class="form-label">Nome artista</label>
+            <input type="text" class="generic-input form-control" id="nomeArtista_{{ index }}" name="nomeArtista" value="{{ pp['NomeArtista'] }}" required>
+        </div>
+        <div class="col-md-3">
+            <label for="giornoInizio_{{ index }}" class="form-label">Giorno</label>
+            <select id="giornoInizio_{{ index }}" name="giornoInizio" class="form-select">
+                <option value="Venerdì" {% if pp['Giorno'] == 'Venerdì' %}selected{% endif %}>Venerdì</option>
+                <option value="Sabato" {% if pp['Giorno'] == 'Sabato' %}selected{% endif %}>Sabato</option>
+                <option value="Domenica" {% if pp['Giorno'] == 'Domenica' %}selected{% endif %}>Domenica</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="oraInizio_{{ index }}" class="form-label">Ora inizio</label>
+            <select id="oraInizio_{{ index }}" name="oraInizio" class="form-select">
+                {% for ora in orari %}
+                    <option value="{{ ora }}" {% if pp['Ora'] == ora %}selected{% endif %}>{{ ora | e }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="durata_{{ index }}" class="form-label">Durata</label>
+            <select id="durata_{{ index }}" name="durata" class="form-select">
+                {% for durata in durate %}
+                    <option value="{{ durata }}" {% if pp["Durata"]|string == durata|string %}selected{% endif %}>{{ durata }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <!-- Palco e Genere -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label for="palco_{{ index }}" class="form-label">Palco</label>
+            <select id="palco_{{ index }}" name="palco" class="form-select">
+                {% for x, y in palchi.items() %}
+                    <option value="{{ x }}" {% if pp['Palco'] == x %}selected{% endif %}>{{ x }} – {{ y }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="genere_{{ index }}" class="form-label">Genere musicale</label>
+            <input type="text" id="genere_{{ index }}" name="genere" class="generic-input form-control" value="{{ pp['Genere'] }}" required>
+        </div>
+    </div>
+
+    <!-- Aggiorna immagine e Pubblica -->
+    <div class="row align-items-center g-3">
+        <label for="file_{{ index }}" class="form-label">Immagine promozionale</label>
+    </div>
+    <div class="row align-items-center g-3 mb-3">
+        <div class="col-md-6">
+            <input type="file" name="file" id="file_{{ index }}" accept="image/jpg" class="form-control">
+        </div>
+        <div class="col-md-3 ">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="pubblico_{{ index }}" name="bozzaPubblica" value="Si">
+                <label class="form-check-label ms-2" for="pubblico_{{ index }}">Pubblica</label>
+            </div>
+        </div>
+        <div class="col-md-3 text-end">
+            <button type="submit" class="btn btn-primary color-coral w-100" name="azione" value="Aggiorna">Aggiorna</button>
+        </div>
+    </div>
+</form>

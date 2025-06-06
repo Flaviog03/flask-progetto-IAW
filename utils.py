@@ -91,3 +91,8 @@ def checkOverlappingPerformances(performancesList, performance):
                 if __durationOverlapping(p["Ora"], __evaluatePerformanceEndTime(p["Ora"], p["Durata"]), performance.ora, __evaluatePerformanceEndTime(performance.ora, performance.durata)):
                     return True
     return False
+
+def isFileNameUnique(filename, fileList):
+    if filename in fileList:
+        return False
+    return True

@@ -1,0 +1,70 @@
+<!-- Prima riga: Nome artista, Giorno, Ora, Durata -->
+<div class="row mb-3">
+    <div class="col-lg-3 mb-3">
+        <label for="nomeArtista" class="form-label">Artista</label>
+        <input type="text" class="generic-input form-control" id="nomeArtista" name="nomeArtista" required>
+    </div>
+    <div class="col-lg-3">
+        <label for="giornoInizio" class="form-label">Giorno</label>
+        <select id="giornoInizio" name="giornoInizio" class="form-select">
+            <option value="Venerdì">Venerdì</option>
+            <option value="Sabato">Sabato</option>
+            <option value="Domenica">Domenica</option>
+        </select>
+    </div>
+    <div class="col-lg-3">
+        <label for="oraInizio" class="form-label">Ora inizio</label>
+        <select id="oraInizio" name="oraInizio" class="form-select">
+            {% for ora in orari %}
+                <option value="{{ ora }}"> {{ora | e}} </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-lg-3">
+        <label for="durata" class="form-label">Durata</label>
+        <select id="durata" name="durata" class="form-select">
+            {% for durata in durate %}
+                <option value="{{ durata }}"> {{durata | e}} </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<!-- Palco e Genere -->
+<div class="row g-3 mb-3">
+    <div class="col-lg-6">
+        <label for="palco" class="form-label">Palco</label>
+        <select id="palco" name="palco" class="form-select">
+             {% for x,y in palchi.items() %}
+                <option value="{{ x }}">{{ x | e }} - {{ y | e }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-lg-6">
+        <label for="genere" class="form-label">Genere musicale</label>
+        <input type="text" id="genere" name="genere" class="generic-input form-control" required>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg mh-100 d-flex flex-column">
+        <label for="descrizione" class="form-label">Descrizione</label>
+        <textarea id="descrizione" name="descrizione" class="form-control flex-grow-1 textarea" placeholder="Scrivi qui la tua descrizione" required></textarea>
+    </div>
+</div>
+
+<!-- Carica immagine e Pubblica -->
+<div class="row align-items-center g-3">
+    <label for="file" class="form-label">Immagine promozionale</label>
+</div>
+<div class="row align-items-center g-3 mb-3">
+    <div class="col-lg-6">
+        <input type="file" name="file" id="file" accept="image/jpg" class="form-control">
+    </div>
+    <div class="col-lg-3 ">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="pubblico" name="bozzaPubblica" value="Si">
+            <label class="form-check-label ms-2" for="pubblico">Pubblica</label>
+        </div>
+    </div>
+</div>

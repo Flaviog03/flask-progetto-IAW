@@ -4,14 +4,17 @@
     {% include "partials/profile_info.html" with context %}
 
     <article class="container border border-5 rounded w-100" id="bozze">
-        <section class="container mt-3 mb-5">
-            <div class="row w-100 border-bottom border-3">
-                <div class="col d-flex justify-content-center mt-2 mb-3">
-                    <button type="button" class="btn btn-primary color-coral w-25" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <section class="container mt-3 border-bottom border-3 pb-3">
+            <div class="row w-100">
+                <div class="col-md-6 d-flex justify-content-center">
+                    <h3 class="mb-0"> Le tue performance </h3>
+                </div>
+                <div class="col-md-6 d-flex justify-content-center mt-md-0 mt-3"> <!-- Così ho margine 0 se vw > md -->
+                    <button type="button" class="btn btn-primary color-coral w-auto" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         Nuova performance
                     </button>
                     
-                    <!-- Modal -->
+                    <!-- MODALE -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
@@ -21,98 +24,11 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body container">
-                                        <div class="row mb-2">
-                                            <div class="col-6">
-                                                <label for="nomeArtista"> Nome Artista</label>
-                                            </div>
-                                            <div class="col-2">
-                                                <label for="giornoInizio"> Giorno di inizio </label>
-                                            </div>
-                                            <div class="col-2">
-                                                <label for="oraInizio"> Ora di inizio </label>
-                                            </div>
-                                            <div class="col-2">
-                                                <label for="durata"> Durata in minuti </label>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-6">
-                                                <input type="text" class="form-control generic-input" id="nomeArtista" name="nomeArtista" required>
-                                            </div>
-                                            <div class="col-2">
-                                                <select id="giornoInizio" name="giornoInizio" class="form-control">
-                                                    <option value="Venerdì"> Venerdì </option>
-                                                    <option value="Sabato"> Sabato </option>
-                                                    <option value="Domenica"> Domenica </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-2">
-                                                <select id="oraInizio" name="oraInizio" class="form-control">
-                                                    {% for ora in orari %}
-                                                        <option value="{{ ora }}"> {{ora | e}} </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div class="col-2">
-                                                <select id="durata" name="durata" class="form-control">
-                                                    {% for durata in durate %}
-                                                        <option value="{{ durata }}"> {{durata | e}} </option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="row">
-                                                <label for="descrizione" class=""> Descrizione evento </label>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col d-flex justify-content-center mt-2 mb-3">
-                                                    <div class="row w-100">
-                                                        <div class="col">
-                                                            <textarea id="descrizione" name="descrizione" placeholder="Scrivi qui la tua descrizione" class="form-control" required></textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <label for="palco">Seleziona il palco</label>
-                                                </div>
-                                                <div class="col">
-                                                    <label for="genere"> Inserisci il genere musicale </label>
-                                                </div>
-                                            </div>
-                                            <div class="row"> 
-                                                <div class="col">
-                                                    <select id="palco" name="palco" class="form-control">
-                                                        {% for x,y in palchi.items() %}
-                                                            <option value="{{ x }}">{{ x | e }} - {{ y | e }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <div class="col">
-                                                    <input type="text" id="genere" name="genere" class="form-control generic-input" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">   
-                                            <div class="col-10">
-                                                <label for="file" class="form-label">Nuova immagine</label>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <input type="file" name="file" id="file" accept="image/jpg" class="form-control w-50" required>
-                                                    <div class="ms-5">
-                                                        <label class="form-check-label" for="pubblico">Pubblica bozza</label>
-                                                        <input class="form-check-input" type="checkbox" name="bozzaPubblica" value="Si" id="pubblico">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {% include "partials/modalNewPerformance.html" with context %}
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer d-flex justify-content-center d-lg-block text-center text-lg-end">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Annulla </button>
-                                        <button type="submit" class="btn btn-primary color-coral" name="azione" value="salva"> Aggiungi performance </button>
+                                        <button type="submit" class="btn btn-primary color-coral" name="azione" value="Nuova"> Aggiungi performance </button>
                                     </div>
                                 </form>
                             </div>
@@ -120,19 +36,29 @@
                     </div>
                 </div>
             </div>
-            <!-- Performances -->
+        </section>
+        <section>
+            <!-- Private performances -->
             {% for pp in performancePrivate %}
-                <div class="row">
-                    {{ pp | e }}
+                <div class="row mt-3 p-3">
+                    {% set index = loop.index0 %}
+                    {% include "partials/modifyPerformanceForm.html" with context %}
                 </div>
             {% endfor %}
         </section>
-        <section class="container">
-            
-        </section>
     </article>
-
+    
     <article class="container border border-5 rounded p-4 my-5 mx-auto w-100 align-items-center" id="performance-pubbliche">
+        <h3 class="border-bottom border-3 p-2"> Performance pubbliche </h3>
+        <!-- Public Performances -->
+        <section class="container mt-3">
+            {% for pubPerf in publicPerformances %}
+                <div class="shadow-sm p-4">
+                    {% set indx = loop.index0 %}
+                    {% include "partials/PublicPerformance.html" with context %}
+                </div>
+            {% endfor %}
+        </section>
     </article>
 
 {% endblock %}

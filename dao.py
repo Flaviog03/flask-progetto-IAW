@@ -88,11 +88,12 @@ def insert_purchase(userID, ticketID):
         print(e)
         return False
 
-def countArtistPerformances(nomeArtista):
+# Conta il numero di performance pubbliche che un artista ha assegnate
+def countArtistPublicPerformances(nomeArtista):
     db = get_db()
     try:
         return db.execute(
-            "SELECT COUNT(*) AS numeroPerformance FROM PERFORMANCE JOIN ARTISTA ON ARTISTA.ID_ARTISTA = PERFORMANCE.ID_ARTISTA WHERE ARTISTA.Nome = ?"
+            "SELECT COUNT(*) AS numeroPerformance FROM PERFORMANCE JOIN ARTISTA ON ARTISTA.ID_ARTISTA = PERFORMANCE.ID_ARTISTA WHERE PERFORMANCE.Stato = 1 AND ARTISTA.Nome = ?"
             ,(nomeArtista,)
         ).fetchone()
     except Exception as e:
@@ -142,9 +143,11 @@ def insertNewArtistImageWithPath(artistID, newPath):
     db = get_db()
     try:
         db.execute(
-        "INSERT INTO " \
-        "PERCORSO_IMMAGINE_ARTISTA (ID_ARTISTA, Percorso) "\
-        "VALUES (?, ?)"
+        """
+        INSERT INTO 
+        PERCORSO_IMMAGINE_ARTISTA (ID_ARTISTA, Percorso) 
+        VALUES (?, ?)
+        """
         ,(artistID, newPath,)
         )
         db.commit()
@@ -171,19 +174,51 @@ def getPublicPerformancesInGivenDay(givenDay):
         print("Errore:", e)
     return []
 
+def getArtistImagesAsList(artistID):
+    db = get_db()
+    try:
+        imagesList = []
+        rows = db.execute(
+            """
+                SELECT Percorso
+                FROM PERCORSO_IMMAGINE_ARTISTA
+                WHERE ID_ARTISTA = ?
+            """,
+            (artistID)
+        ).fetchall()
+
+        for r in rows:
+            imagesList.append(r["Percorso"])
+        return imagesList
+    except Exception as e:
+        print("Errore:", e)
+    return []
+
 def getPrivatePerformancesByUserID(userID):
     db = get_db()
     try:
         performanceList = []
-        rows = db.execute(
-            """
-            SELECT Giorno, Ora, Durata, PALCO.ID_PALCO AS ID_PALCO, PERFORMANCE.Descrizione AS Descrizione, PALCO.Descrizione AS DescrizionePalco, ARTISTA.Nome as NomeArtista
+        rows = db.execute("""
+            SELECT Giorno, Ora, Durata, PALCO.ID_PALCO AS ID_PALCO,
+                   PERFORMANCE.Descrizione AS Descrizione,
+                   PALCO.Descrizione AS DescrizionePalco,
+                   ARTISTA.Nome AS NomeArtista,
+                   PERFORMANCE.ID_ARTISTA AS ID_ARTISTA,
+                   PERFORMANCE.Genere_musicale AS Genere,
+                   PERFORMANCE.ID_PERFORMANCE AS performanceID
             FROM PERFORMANCE 
             JOIN ARTISTA ON ARTISTA.ID_ARTISTA = PERFORMANCE.ID_ARTISTA
             JOIN PALCO ON PALCO.ID_PALCO = PERFORMANCE.ID_PALCO
             WHERE Stato = 0 AND ID_UTENTE = ?
-            """, (userID,)).fetchall()
+        """, (userID,)).fetchall()
+
         for r in rows:
+            immagini_rows = db.execute("""
+                SELECT Percorso FROM PERCORSO_IMMAGINE_ARTISTA WHERE ID_ARTISTA = ?
+            """, (r["ID_ARTISTA"],)).fetchall()
+
+            immagini = list({img["Percorso"] for img in immagini_rows})  # set per evitare duplicati
+
             performanceList.append({
                 "Giorno": r["Giorno"],
                 "Ora": r["Ora"],
@@ -191,8 +226,64 @@ def getPrivatePerformancesByUserID(userID):
                 "Palco": r["ID_PALCO"],
                 "DescPalco": r["DescrizionePalco"],
                 "Descrizione": r["Descrizione"],
-                "NomeArtista":r["NomeArtista"]
+                "NomeArtista": r["NomeArtista"],
+                "Genere": r["Genere"],
+                "performanceID": r["performanceID"],
+                "ImmaginiArtista": immagini
             })
+        return performanceList
+    except Exception as e:
+        print("Errore:", e)
+    return []
+
+def getPublicPerformancesWithImages():
+    db = get_db()
+    try:
+        performanceList = []
+        rows = db.execute(
+            """
+            SELECT Giorno, Ora, Durata, PALCO.ID_PALCO AS ID_PALCO,
+                   PERFORMANCE.Descrizione AS Descrizione,
+                   PALCO.Descrizione AS DescrizionePalco,
+                   ARTISTA.Nome AS NomeArtista,
+                   PERFORMANCE.ID_ARTISTA AS ID_ARTISTA,
+                   PERFORMANCE.Genere_musicale AS Genere,
+                   PERFORMANCE.ID_PERFORMANCE AS performanceID
+            FROM PERFORMANCE 
+            JOIN ARTISTA ON ARTISTA.ID_ARTISTA = PERFORMANCE.ID_ARTISTA
+            JOIN PALCO ON PALCO.ID_PALCO = PERFORMANCE.ID_PALCO
+            WHERE PERFORMANCE.Stato = 1
+            """
+        ).fetchall()
+
+        for r in rows:
+            immagini_rows = db.execute(
+                """
+                SELECT Percorso 
+                FROM PERCORSO_IMMAGINE_ARTISTA 
+                WHERE ID_ARTISTA = ?
+                """
+                , (r["ID_ARTISTA"],)).fetchall()
+            
+            immagini_set = set()
+            for img in immagini_rows:
+                immagini_set.add(img["Percorso"])
+            immagini = list(immagini_set)
+            performanceList.append(
+                {
+                    "Giorno": r["Giorno"],
+                    "Ora": r["Ora"],
+                    "Durata": r["Durata"],
+                    "Palco": r["ID_PALCO"],
+                    "DescPalco": r["DescrizionePalco"],
+                    "Descrizione": r["Descrizione"],
+                    "NomeArtista": r["NomeArtista"],
+                    "Genere": r["Genere"],
+                    "performanceID": r["performanceID"],
+                    "ImmaginiArtista": immagini
+                }
+            )
+            
         return performanceList
     except Exception as e:
         print("Errore:", e)
@@ -217,6 +308,24 @@ def insert_performance(day, time, duration, description, state, musicType, userI
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"\
             ,
             (day, time, duration, description, state, musicType, userID, artistID, stageID, )
+        )
+        db.commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False
+    
+def update_performance(day, time, duration, description, state, musicType, userID, artistID, stageID, performanceID):
+    db = get_db()
+    try:
+        db.execute(
+            """
+            UPDATE PERFORMANCE
+            SET Giorno = ?, Ora = ?, Durata = ?, Descrizione = ?, Stato = ?, Genere_musicale = ?, ID_UTENTE = ?, ID_ARTISTA = ?, ID_PALCO = ?
+            WHERE ID_PERFORMANCE = ?
+            """
+            ,
+            (day, time, duration, description, state, musicType, userID, artistID, stageID, performanceID)
         )
         db.commit()
         return True

@@ -1,0 +1,66 @@
+<div class="row g-3 mb-3">
+    <!-- Carosello -->
+    <div class="col-md-3">
+        <div id="carouselArtistaPub_{{ indx }}" class="carousel slide">
+            <div class="carousel-inner">
+                {% for img_path in pubPerf["ImmaginiArtista"] %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <img src="{{ url_for('static', filename='images/artists/' ~ img_path) }}" class="img-fluid img-thumbnail w-100 rounded shadow-sm" alt="profile image">
+                </div>
+                {% endfor %}
+            </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselArtistaPub_{{ indx }}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselArtistaPub_{{ indx }}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+     <!-- Descrizione -->
+    <div class="col-md-9 mh-100 d-flex flex-column">
+        <label for="descrizione_{{ indx }}" class="form-label">Descrizione</label>
+        <p id="descrizione_{{ indx }}" name="descrizione" class="">{{ pubPerf["Descrizione"] }}</p>
+    </div>
+</div>
+<!-- Prima riga: Nome artista, Giorno, Ora, Durata -->
+<div class="row mb-3">
+    <div class="col-md-3">
+        <label for="nomeArtista_{{ indx }}" class="form-label">Nome artista</label>
+        <p class="" id="nomeArtista_{{ indx }}" name="nomeArtista">{{ pubPerf['NomeArtista'] }}</p>
+    </div>
+    <div class="col-md-3">
+        <label for="giornoInizio_{{ indx }}" class="form-label">Giorno</label>
+        <p id="giornoInizio_{{ indx }}" name="giornoInizio" class=""> {{pubPerf["Giorno"]}} </p>
+    </div>
+    <div class="col-md-3">
+        <label for="oraInizio_{{ indx }}" class="form-label">Ora inizio</label>
+        <p id="oraInizio_{{ indx }}" name="oraInizio" class="">
+            {{pubPerf["Ora"]}}
+        </p>
+    </div>
+    <div class="col-md-3">
+        <label for="durata_{{ indx }}" class="form-label">Durata</label>
+        <p id="durata_{{ indx }}" name="durata" class="">
+            {{pubPerf["Durata"]}}
+        </p>
+    </div>
+</div>
+
+<!-- Palco e Genere -->
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        <label for="palco_{{ indx }}" class="form-label">Palco</label>
+        <p id="palco_{{ indx }}" name="palco" class="">
+            {{ pubPerf["Palco"]}}
+        </p>
+    </div>
+    <div class="col-md-6">
+        <label for="genere_{{ indx }}" class="form-label">Genere musicale</label>
+        <p id="genere_{{ indx }}" name="genere" class="">
+            {{ pubPerf["Genere"] }}
+        </p>
+    </div>
+</div>

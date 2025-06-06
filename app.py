@@ -7,6 +7,7 @@ import os
 from werkzeug.utils import secure_filename
 from models import User, Ticket, Performance
 from db import close_db
+from PIL import Image
 import dao
 
 # Initialize the Flask application
@@ -14,18 +15,20 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "PeterGriffin"
 app.teardown_appcontext(close_db)
 
+# Variabili Globali
 UPLOAD_FOLDER = os.path.join("static", "images")
 UPLOAD_FOLDER_PERFORMANCES = os.path.join("static", "images", "artists")
+PROFILE_IMG_HEIGHT = 130
+POST_IMG_WIDTH = 300
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# Variabili Globali
 ruoli = ["ORGANIZZATORE", "PARTECIPANTE"]
 giorniFestival = {"Venerdì":"Sabato", "Sabato":"Domenica", "Domenica":None}
 idTipiBiglietti = {"Giornaliero":1, "2 Giorni":2, "Full Pass":3}
-orariConsentiti = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00"]
+orariConsentiti = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
 durateConsentite = ["30", "60", "90", "120"]
 palchiConsentiti = {"A":"Main Stage", "B":"Secondary Stage", "C":"Experimental Stage"}
 
@@ -86,8 +89,10 @@ def register():
 @login_required
 def profile():
     if current_user.ruolo == ruoli[0]: # Organizzatore
-        print(dao.getPrivatePerformancesByUserID(current_user.id))
-        return render_template("profilo_organizzatore.html", orari = orariConsentiti, durate = durateConsentite, palchi = palchiConsentiti, performancePrivate = dao.getPrivatePerformancesByUserID(current_user.id))
+        pp = dao.getPrivatePerformancesByUserID(current_user.id)
+        publicPerformances = dao.getPublicPerformancesWithImages()
+        print(publicPerformances)
+        return render_template("profilo_organizzatore.html", orari = orariConsentiti, durate = durateConsentite, palchi = palchiConsentiti, performancePrivate = dao.getPrivatePerformancesByUserID(current_user.id), publicPerformances = publicPerformances)
     elif current_user.ruolo == ruoli[1]: # Partecipante
         biglietto = dao.getUserTicket(current_user.id)
         return render_template("profilo_partecipante.html", p_biglietto = biglietto, infoBiglietti = dao.getTicketPricesAndDescription())
@@ -105,7 +110,9 @@ def aggiorna_immagine():
     if utils.allowed_file(file.filename):
         filename = f"{current_user.id}_{secure_filename(file.filename)}"   # elimina o sostituisce caratteri pericolosi o non validi.
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
+        img = Image.open(file)
+        img.thumbnail((200,200))
+        img.save(filepath)
         current_user.percorso_immagine = filename
         dao.updateImagePath(filename, current_user.id)
         flash("Immagine aggiornata con successo!", "success")
@@ -116,6 +123,8 @@ def aggiorna_immagine():
 @app.route("/nuova_bozza", methods=["POST"])
 @login_required
 def nuova_bozza():    
+    azione = request.form.get("azione") # Nuova o Aggiorna
+
     form_data = {
         "Artista":request.form.get("nomeArtista").strip(),
         "Giorno":request.form.get("giornoInizio").strip(),
@@ -130,8 +139,8 @@ def nuova_bozza():
 
     # Un artista può essere stato inserito nel db senza avere assegnata alcuna performance pubblicata
     if utils.checkIfArtistExists(dao.getArtistsList(), form_data["Artista"]):
-        if dao.countArtistPerformances(form_data["Artista"])["numeroPerformance"] != 0:
-            flash("L'artista inserito ha già una performance assegnata", "danger")
+        if dao.countArtistPublicPerformances(form_data["Artista"])["numeroPerformance"] != 0:
+            flash("L'artista inserito ha già una performance pubblica assegnata", "danger")
             redirect(url_for("profile"))
     else:
         if not dao.insert_artist(form_data["Artista"].strip()):
@@ -141,29 +150,44 @@ def nuova_bozza():
     # Verifica che la performance NON si sovrapponga ad altre già pubblicate sullo stesso giorno e palco
     performance = Performance(form_data["Giorno"], form_data["Ora"], form_data["Durata"], form_data["IDpalco"])
     if not utils.checkOverlappingPerformances(dao.getPublicPerformancesInGivenDay(form_data["Giorno"]), performance):       # Il controllo si fa solo sulle performance pubblicate
-        if dao.insert_performance(form_data["Giorno"], form_data["Ora"], form_data["Durata"], form_data["Descrizione"], form_data["Pubblica"], form_data["Genere"], current_user.id, dao.getArtistIdByName(form_data["Artista"])["idArtista"], form_data["IDpalco"]):
-            flash("Inserimento avvenuto con successo", "success")
+        if azione == "Nuova":
+            if dao.insert_performance(form_data["Giorno"], form_data["Ora"], form_data["Durata"], form_data["Descrizione"], form_data["Pubblica"], form_data["Genere"], current_user.id, dao.getArtistIdByName(form_data["Artista"])["idArtista"], form_data["IDpalco"]):    # Il [0] perché il primo valore è quello che indica successo o meno dell'inserimento
+                flash("Inserimento avvenuto con successo", "success")
+            else:
+                flash("Errore, la performance che si sta provando ad inserire si sovrappone ad una già esistente", "danger")
+                redirect(url_for("profile"))
+        elif azione == "Aggiorna":
+            idPerformance = request.form.get("idPerformance").strip()
+            if not dao.update_performance(form_data["Giorno"], form_data["Ora"], form_data["Durata"], form_data["Descrizione"], form_data["Pubblica"], form_data["Genere"], current_user.id, dao.getArtistIdByName(form_data["Artista"])["idArtista"], form_data["IDpalco"], idPerformance):
+                flash("Errore nell'aggiornamento della performance", "danger")
+                redirect(url_for("profile"))
+        
+        # Inserisco l'immagine caricata
+        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER_PERFORMANCES
+        file = form_data["Immagine"]
 
-            # Inserisco l'immagine caricata
-            app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER_PERFORMANCES
-            file = form_data["Immagine"]
-
-            if utils.allowed_file(file.filename):
+        if file:
+            if utils.allowed_file(file.filename) and utils.isFileNameUnique(file.filename, dao.getArtistImagesAsList(dao.getArtistIdByName(form_data["Artista"])["idArtista"])):
                 filename = f"{form_data['Artista']}_{secure_filename(file.filename)}"   # elimina o sostituisce caratteri pericolosi o non validi.
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(filepath)
-
                 if dao.insertNewArtistImageWithPath((dao.getArtistIdByName(form_data["Artista"])["idArtista"]), filename):
+                    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    img = Image.open(file)
+
+                    
+                    
+                    img.thumbnail((200,200))
+                    img.save(filepath)
                     flash("Immagine aggiornata con successo!", "success")
+                    flash("Aggiornamento avvenuto con successo", "success")
                 else:
-                    flash("Errore nell'aggiornamento immagine", "danger")
+                    flash("Errore nell'aggiornamento immagine, file non supportato o nome dell'immagine non univoco", "danger")
             else:
                 flash("Formato file non supportato", "danger")
+        else:
+            flash("Aggiornamento avvenuto con successo", "success")
 
-            app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER # Restore dell'upload folder
-    else:
-        flash("Errore, la performance che si sta provando ad inserire si sovrappone ad una già esistente", "danger")
-    
+        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER # Restore dell'upload folder
+
     return redirect(url_for("profile"))
 
 

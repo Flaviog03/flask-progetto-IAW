@@ -62,3 +62,5 @@ Simile a questa: https://getbootstrap.com/docs/5.3/examples/album/#
 
 Modidiche al DB
 L'Artista adesso ha il nome unique 
+
+Un artista può avere più di una performance bozza inserita ma una sola performance pubblica assegnata
