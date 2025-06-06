@@ -61,4 +61,29 @@
         </section>
     </article>
 
+    <!-- Statistiche biglietti -->
+    <article class="container border border-5 rounded p-4 my-4 shadow bg-light">
+    <h3 class="text-center mb-4">Statistiche Vendite Biglietti</h3>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for stat in statistiche %}
+        <div class="col">
+            <div class="card h-100 text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ stat["Giorno"] }}</h5>
+                    <p class="card-text fs-4 text-primary">
+                        {{ stat["BigliettiVenduti"] }} biglietti venduti
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <span class="badge bg-primary bg-opacity-75">SoundWaves TP</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</article>
+
+    
+
 {% endblock %}

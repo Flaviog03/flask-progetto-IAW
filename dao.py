@@ -54,12 +54,42 @@ def getTicketPricesAndDescription():
 def countTicketsPerGivenDay(Day):
     db = get_db()
     try:
-        return db.execute(
-            "SELECT COUNT(*) as numeroBiglietti FROM BIGLIETTO WHERE giorno_riferimento = ?", (Day,)
-        ).fetchone()
+        bigliettiVenduti = {"Venerdì":0, "Sabato":0, "Domenica":0}
+        giorniFestival = {"Venerdì":"Sabato", "Sabato":"Domenica", "Domenica":None}
+        tipoBiglietti = ["Giornaliero", "2 Giorni", "Full Pass"]
+
+        rows = db.execute(
+            """
+            SELECT 
+                COUNT(BIGLIETTO.ID_BIGLIETTO) AS BigliettiVenduti,
+                BIGLIETTO.giorno_riferimento AS Giorno,
+                TIPO_BIGLIETTO.Descrizione AS TipoBiglietto
+            FROM BIGLIETTO
+            JOIN TIPO_BIGLIETTO 
+                ON TIPO_BIGLIETTO.ID_TIPO_BIGLIETTO = BIGLIETTO.ID_TIPO_BIGLIETTO
+            GROUP BY 
+                BIGLIETTO.giorno_riferimento, 
+                TIPO_BIGLIETTO.ID_TIPO_BIGLIETTO
+            ORDER BY 
+                TIPO_BIGLIETTO.ID_TIPO_BIGLIETTO ASC, 
+                BIGLIETTO.giorno_riferimento ASC
+            """
+        ).fetchall()
+
+        for row in rows:
+            if row["TipoBiglietto"] == tipoBiglietti[0]:        # giornaliero
+                bigliettiVenduti[row["Giorno"]] += (1 * row["BigliettiVenduti"])
+            elif row["TipoBiglietto"] == tipoBiglietti[1]:      # 2 giorni
+                bigliettiVenduti[row["Giorno"]] += (1 * row["BigliettiVenduti"])
+                bigliettiVenduti[giorniFestival[row["Giorno"]]] += (1 * row["BigliettiVenduti"])
+            else:                                               # full pass
+                for k in bigliettiVenduti:
+                    bigliettiVenduti[k] += (1 * row["BigliettiVenduti"])
+
+
+        return bigliettiVenduti[Day]
     except Exception as e:
         print(e)
-    
     return None
 
 def insert_ticket(ticketTypeID, reportingDay):
@@ -332,3 +362,44 @@ def update_performance(day, time, duration, description, state, musicType, userI
     except Exception as e:
         print(e)
         return False
+
+# Inutilizzato
+def count_tickets_by_type():
+    db = get_db()
+    try:
+        return db.execute(
+            """
+            SELECT Descrizione AS TipoBgilietto, COUNT(*) AS NumeroBiglietti
+            FROM BIGLIETTO
+            JOIN TIPO_BIGLIETTO ON TIPO_BIGLIETTO.ID_TIPO_BIGLIETTO = BIGLIETTO.ID_TIPO_BIGLIETTO
+            GROUP BY BIGLIETTO.ID_TIPO_BIGLIETTO
+            """
+            ).fetchall()
+    except Exception as e:
+        print(e)
+        return None
+    
+# Inutilizzato
+def get_ticket_sales_by_day_and_type():
+    db = get_db()
+    try:
+        return db.execute(
+            """
+            SELECT 
+                COUNT(BIGLIETTO.ID_BIGLIETTO) AS BigliettiVenduti,
+                BIGLIETTO.giorno_riferimento AS Giorno,
+                TIPO_BIGLIETTO.Descrizione AS TipoBiglietto
+            FROM BIGLIETTO
+            JOIN TIPO_BIGLIETTO 
+                ON TIPO_BIGLIETTO.ID_TIPO_BIGLIETTO = BIGLIETTO.ID_TIPO_BIGLIETTO
+            GROUP BY 
+                BIGLIETTO.giorno_riferimento, 
+                TIPO_BIGLIETTO.ID_TIPO_BIGLIETTO
+            ORDER BY 
+                TIPO_BIGLIETTO.ID_TIPO_BIGLIETTO ASC, 
+                BIGLIETTO.giorno_riferimento ASC;
+            """
+            ).fetchall()
+    except Exception as e:
+        print(e)
+        return None

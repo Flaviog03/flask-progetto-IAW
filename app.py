@@ -91,7 +91,15 @@ def profile():
     if current_user.ruolo == ruoli[0]: # Organizzatore
         pp = dao.getPrivatePerformancesByUserID(current_user.id)
         publicPerformances = dao.getPublicPerformancesWithImages()
-        return render_template("profilo_organizzatore.html", orari = orariConsentiti, durate = durateConsentite, palchi = palchiConsentiti, performancePrivate = dao.getPrivatePerformancesByUserID(current_user.id), publicPerformances = publicPerformances)
+        statistics = []
+        
+        for giorno in giorniFestival.keys():
+            statistics.append({
+                "Giorno": giorno,
+                "BigliettiVenduti": dao.countTicketsPerGivenDay(giorno)
+            })
+
+        return render_template("profilo_organizzatore.html", orari = orariConsentiti, durate = durateConsentite, palchi = palchiConsentiti, performancePrivate = dao.getPrivatePerformancesByUserID(current_user.id), publicPerformances = publicPerformances, statistiche = statistics)
     elif current_user.ruolo == ruoli[1]: # Partecipante
         biglietto = dao.getUserTicket(current_user.id)
         return render_template("profilo_partecipante.html", p_biglietto = biglietto, infoBiglietti = dao.getTicketPricesAndDescription())
@@ -195,7 +203,6 @@ def nuova_bozza():
 
     return redirect(url_for("profile"))
 
-
 @app.route("/acquista_biglietto", methods=["POST"])
 @login_required
 def acquista_biglietto():
@@ -204,7 +211,6 @@ def acquista_biglietto():
         return render_template("home.html")
 
     tipo_biglietto = request.form.get("tipo_biglietto")
-    prezzo = request.form.get("prezzo")
     giorno = request.form.get("giornoSelezionato")
     esaurito = False
 
