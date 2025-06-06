@@ -19,7 +19,7 @@ app.teardown_appcontext(close_db)
 UPLOAD_FOLDER = os.path.join("static", "images")
 UPLOAD_FOLDER_PERFORMANCES = os.path.join("static", "images", "artists")
 PROFILE_IMG_HEIGHT = 130
-POST_IMG_WIDTH = 300
+PERFORMANCE_IMG_WIDTH = 300
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 login_manager = LoginManager()
@@ -91,7 +91,6 @@ def profile():
     if current_user.ruolo == ruoli[0]: # Organizzatore
         pp = dao.getPrivatePerformancesByUserID(current_user.id)
         publicPerformances = dao.getPublicPerformancesWithImages()
-        print(publicPerformances)
         return render_template("profilo_organizzatore.html", orari = orariConsentiti, durate = durateConsentite, palchi = palchiConsentiti, performancePrivate = dao.getPrivatePerformancesByUserID(current_user.id), publicPerformances = publicPerformances)
     elif current_user.ruolo == ruoli[1]: # Partecipante
         biglietto = dao.getUserTicket(current_user.id)
@@ -111,7 +110,10 @@ def aggiorna_immagine():
         filename = f"{current_user.id}_{secure_filename(file.filename)}"   # elimina o sostituisce caratteri pericolosi o non validi.
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         img = Image.open(file)
-        img.thumbnail((200,200))
+        width, height = img.size
+        new_height = height / width * PERFORMANCE_IMG_WIDTH
+        size = PERFORMANCE_IMG_WIDTH, new_height
+        img.thumbnail(size, Image.Resampling.LANCZOS)
         img.save(filepath)
         current_user.percorso_immagine = filename
         dao.updateImagePath(filename, current_user.id)
@@ -173,11 +175,14 @@ def nuova_bozza():
                     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                     img = Image.open(file)
 
-                    
-                    
-                    img.thumbnail((200,200))
+                    width, height = img.size
+                    new_height = height / width * PERFORMANCE_IMG_WIDTH
+                    size = PERFORMANCE_IMG_WIDTH, new_height
+                    img.thumbnail(size, Image.Resampling.LANCZOS)
+
                     img.save(filepath)
-                    flash("Immagine aggiornata con successo!", "success")
+
+                    # flash("Immagine aggiornata con successo!", "success")
                     flash("Aggiornamento avvenuto con successo", "success")
                 else:
                     flash("Errore nell'aggiornamento immagine, file non supportato o nome dell'immagine non univoco", "danger")
