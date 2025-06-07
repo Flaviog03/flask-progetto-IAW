@@ -3,7 +3,7 @@
 {% block content %}
     {% include "partials/profile_info.html" with context %}
 
-    <article class="container border border-5 rounded w-100 bg-light" id="bozze">
+    <article class="container card border-2 rounded-4 p-3 p-md-4 mt-3 shadow-sm w-75" id="bozze">
         <section class="container mt-3 border-bottom border-3 pb-3">
             <div class="row w-100">
                 <div class="col-md-6 d-flex justify-content-center">
@@ -48,9 +48,9 @@
         </section>
     </article>
     
-    <article class="container border border-5 rounded p-4 my-5 mx-auto w-100 align-items-center bg-light" id="performance-pubbliche">
+    <!-- Public Performances -->
+    <article class="container card border-2 rounded-4 p-3 p-md-4 mt-3 shadow-sm w-75" id="performance-pubbliche">
         <h3 class="border-bottom border-3 p-2"> Performance pubbliche </h3>
-        <!-- Public Performances -->
         <section class="container mt-3">
             {% for pubPerf in publicPerformances %}
                 {% set indx = loop.index0 %}
@@ -60,8 +60,8 @@
     </article>
 
     <!-- Statistiche biglietti -->
-    <article class="container border border-5 rounded p-4 my-4 shadow bg-light">
-    <h3 class="text-center mb-4">Statistiche Vendite Biglietti</h3>
+    <article class="container card border-2 rounded-4 p-3 p-md-4 mt-3 shadow-sm w-75">
+    <h3 class="text-center mb-4 p-2 border-3 border-bottom">Statistiche Vendite Biglietti</h3>
     
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for stat in statistiche %}
@@ -81,7 +81,5 @@
         {% endfor %}
     </div>
 </article>
-
-    
 
 {% endblock %}
