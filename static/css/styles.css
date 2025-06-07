@@ -52,8 +52,7 @@ input[type="text"],
 }
 
 .navbar{
-    background-color: #FFF4D6; /* sabbia chiara */
-    color: #3D348B; /* indaco profondo */
+    background: linear-gradient(to bottom, #e2ce69, #f3e5a7, #e2f6fb);
     border-bottom: 2px solid #FF924C; /* linea sottile arancio tramonto */
 }
 
