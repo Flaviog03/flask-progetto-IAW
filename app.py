@@ -35,7 +35,8 @@ palchiConsentiti = {"A":"Main Stage", "B":"Secondary Stage", "C":"Experimental S
 # Define a route for the homepage
 @app.route("/")
 def home():
-    return render_template("home.html")
+    publicPerformances = dao.getPublicPerformancesWithImages()
+    return render_template("home.html", performances = publicPerformances)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

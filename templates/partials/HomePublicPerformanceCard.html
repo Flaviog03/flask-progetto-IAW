@@ -1,0 +1,35 @@
+<div class="card shadow-sm w-75">
+    <!-- Carosello -->
+    <div id="carouselArtistaPub_{{ indx }}" class="carousel slide h-100">
+        <div class="p-2">
+            <div class="carousel-inner rounded-start">
+                {% for img_path in pubPerf["ImmaginiArtista"] %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <img src="{{ url_for('static', filename='images/artists/' ~ img_path) }}"
+                        class="d-block object-fit-cover rounded-start img-fluid img-thumbnail rounded shadow-sm"
+                        alt="Immagine artista">
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselArtistaPub_{{ indx }}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Precedente</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselArtistaPub_{{ indx }}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Successivo</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Info -->
+    <div class="card-body"> 
+        <p class="card-text">{{pubPerf["Descrizione"]}}</p>
+        <div class="d-flex justify-content-between align-items-center"> 
+            <div class="btn-group"> 
+                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+            </div>
+            <small class="text-body-secondary">{{pubPerf["Giorno"]}}</small>
+        </div>
+    </div>
+</div>

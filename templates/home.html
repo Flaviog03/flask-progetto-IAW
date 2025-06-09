@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="container">
-    <h1>Benvenuto su SoundWaves TP!</h1>
-    <p>Questa è la homepage del festival.</p>
-    {% if current_user.is_authenticated %}
-      <p> Utente loggato: {{ current_user.nome }} </p>
-    {% else %}
-      <p> Non sei loggato. </p>
-    {% endif %}
-  </div>
+<section class="position-relative w-100">
+    <img src="{{ url_for('static', filename='images/TrapaniHome.jpg') }}" class="img-fluid w-100" alt="Banner Home">
+    <div class="position-absolute top-50 start-50 translate-middle text-white text-center">
+        <h1 class="display-4 fw-bold">SoundWaves TP</h1>
+        <p class="lead">Scopri il festival musicale più atteso dell’anno!</p>
+        <a href="{{ url_for('home') }}" class="btn btn-outline-light btn-lg mt-3"><b>Scopri di più</b></a>
+    </div>
+</section>
+<section>
+    <div class="album container py-5">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-3">
+            {% for pubPerf in performances %}
+                {% set indx = loop.index0 %}
+                {% include "partials/HomePublicPerformanceCard.html" with context %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
 {% endblock %}
-
