@@ -55,8 +55,8 @@ def validateLoginForm(form):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def checkIfDayTicketAveilable(row):
-    if row["numeroBiglietti"] < MAX_BIGLIETTI_PER_GIORNO:
+def checkIfDayTicketAveilable(numeroBigliettiVenduti):
+    if numeroBigliettiVenduti < MAX_BIGLIETTI_PER_GIORNO:
         return True
     return False
 

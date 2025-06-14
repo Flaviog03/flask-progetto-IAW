@@ -49,7 +49,7 @@ def login():
             if db_user and check_password_hash(db_user["Password"], user_form["password"].strip()):
                 user = load_user(db_user["ID_UTENTE"])
                 login_user(user)
-                return render_template("home.html")
+                return redirect(url_for("profile"))
             else:
                 flash("Utente non trovato o password errata", "danger")
                 return render_template("login.html")
@@ -77,7 +77,7 @@ def register():
                     db_user = dao.get_user_by_email(user_form["email"])
                     user = load_user(db_user["ID_UTENTE"])
                     login_user(user)
-                    return render_template("home.html")
+                    return redirect(url_for("profile"))
                 else:
                     flash("Errore nell'inserimento", "error")
         else:
@@ -157,7 +157,7 @@ def nuova_bozza():
         if not dao.insert_artist(form_data["Artista"].strip()):
             flash("Errore nell'inserimento dell'artista", "danger")
             redirect(url_for("profile"))
-        
+
     # Verifica che la performance NON si sovrapponga ad altre già pubblicate sullo stesso giorno e palco
     performance = Performance(form_data["Giorno"], form_data["Ora"], form_data["Durata"], form_data["IDpalco"])
     if not utils.checkOverlappingPerformances(dao.getPublicPerformancesInGivenDay(form_data["Giorno"]), performance):       # Il controllo si fa solo sulle performance pubblicate
@@ -201,7 +201,9 @@ def nuova_bozza():
             flash("Aggiornamento avvenuto con successo", "success")
 
         app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER # Restore dell'upload folder
-
+    else:
+        flash("La performance ha sovrapposizione", "danger")
+        
     return redirect(url_for("profile"))
 
 @app.route("/acquista_biglietto", methods=["POST"])
