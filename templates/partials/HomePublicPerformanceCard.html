@@ -5,8 +5,8 @@
       {% for img_path in pubPerf["ImmaginiArtista"] %}
         <div class="carousel-item {% if loop.first %}active{% endif %}">
           <img src="{{ url_for('static', filename='images/artists/' ~ img_path) }}"
-               class="d-block w-100 object-fit-cover h-100 rounded-start"
-               alt="Immagine artista" style="max-height: 250px;">
+               class="d-block w-100 object-fit-cover h-100 rounded-start img-contain-350"
+               alt="Immagine artista">
         </div>
       {% endfor %}
     </div>

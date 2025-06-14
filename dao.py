@@ -403,3 +403,88 @@ def get_ticket_sales_by_day_and_type():
     except Exception as e:
         print(e)
         return None
+    
+def getGeneresListFromPublicPerformances():
+    db = get_db()
+    try:
+        generesList = []
+        rows = db.execute(
+            """
+            SELECT DISTINCT(Genere_musicale) as Genere
+            FROM PERFORMANCE
+            WHERE Stato = 1
+            """
+            ).fetchall()
+        
+        for r in rows:
+            generesList.append(r["Genere"])
+
+        return generesList
+    except Exception as e:
+        print(e)
+        return []
+    
+def getFilteredPublicPerformancesWithImages(giorno, genere, palco):
+    db = get_db()
+    try:
+        performanceList = []
+
+        query = """
+            SELECT Giorno, Ora, Durata, PALCO.ID_PALCO AS ID_PALCO,
+                   PERFORMANCE.Descrizione AS Descrizione,
+                   PALCO.Descrizione AS DescrizionePalco,
+                   ARTISTA.Nome AS NomeArtista,
+                   PERFORMANCE.ID_ARTISTA AS ID_ARTISTA,
+                   PERFORMANCE.Genere_musicale AS Genere,
+                   PERFORMANCE.ID_PERFORMANCE AS performanceID
+            FROM PERFORMANCE 
+            JOIN ARTISTA ON ARTISTA.ID_ARTISTA = PERFORMANCE.ID_ARTISTA
+            JOIN PALCO ON PALCO.ID_PALCO = PERFORMANCE.ID_PALCO
+            WHERE PERFORMANCE.Stato = 1
+        """
+        params = []
+
+        if giorno:
+            query += " AND Giorno = ?"
+            params.append(giorno)
+        if genere:
+            query += " AND Genere_musicale = ?"
+            params.append(genere)
+        if palco:
+            query += " AND PALCO.ID_PALCO = ?"
+            params.append(palco)
+
+        print(query)
+        print( params )
+
+        if params:
+            rows = db.execute(query, params).fetchall()
+        else:
+            rows = db.execute(query).fetchall()
+
+        for r in rows:
+            immagini_rows = db.execute(
+                "SELECT Percorso FROM PERCORSO_IMMAGINE_ARTISTA WHERE ID_ARTISTA = ?",
+                (r["ID_ARTISTA"],)
+            ).fetchall()
+
+            immagini = list({img["Percorso"] for img in immagini_rows})
+
+            performanceList.append({
+                "Giorno": r["Giorno"],
+                "Ora": r["Ora"],
+                "Durata": r["Durata"],
+                "Palco": r["ID_PALCO"],
+                "DescPalco": r["DescrizionePalco"],
+                "Descrizione": r["Descrizione"],
+                "NomeArtista": r["NomeArtista"],
+                "Genere": r["Genere"],
+                "performanceID": r["performanceID"],
+                "ImmaginiArtista": immagini
+            })
+
+        return performanceList
+
+    except Exception as e:
+        print("Errore:", e)
+        return []

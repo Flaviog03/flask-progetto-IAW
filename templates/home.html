@@ -10,6 +10,43 @@
         <p> Ci trovi: <b> Lungomare Dante Alighieri TP</b></p>
     </div>
 </section>
+
+<section class="container mt-3 py-3 bg-light">
+  <form method="get" action="{{ url_for('home') }}" class="row gy-2 gx-3 align-items-center">
+    <div class="col-sm-6 col-md-3">
+      <label for="giornoFiltro" class="form-label">Giorno:</label>
+      <select name="giorno" id="giornoFiltro" class="form-select">
+        <option value="None">Tutti</option>
+            {% for giorno in giorni %}
+                <option value="{{ giorno }}" {% if request.args.get('giorno') == giorno %}selected{% endif %}>{{ giorno | e }}</option>
+            {% endfor %}
+      </select>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <label for="palcoFiltro" class="form-label">Palco:</label>
+        <select id="palco" name="palco" class="form-select">
+            <option value="None">Tutti</option>
+            {% for x,y in palchi.items() %}
+                <option value="{{ x }}" {% if request.args.get('palco') == x %}selected{% endif %}>{{ x | e }} - {{ y | e }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <label for="genereFiltro" class="form-label">Genere musicale:</label>
+      <select name="genere" id="genereFiltro" class="form-select">
+        <option value="None">Tutti</option>
+        {% for genere in generi %}
+                <option value="{{ genere }}" {% if request.args.get('genere') == genere %}selected{% endif %}>{{ genere | e }}</option>
+            {% endfor %}
+      </select>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <label for="bottoneInvia" class="form-label">Applica:</label>
+        <button type="submit" id="bottoneInvia" class="btn btn-primary w-100">Filtra</button>
+    </div>
+  </form>
+</section>
+
 <section>
     <div class="album container py-5">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-3">

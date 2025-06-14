@@ -35,8 +35,21 @@ palchiConsentiti = {"A":"Main Stage", "B":"Secondary Stage", "C":"Experimental S
 # Define a route for the homepage
 @app.route("/")
 def home():
-    publicPerformances = dao.getPublicPerformancesWithImages()
-    return render_template("home.html", performances = publicPerformances)
+    giorno = request.args.get("giorno")
+    if giorno == "None":
+        giorno = None
+
+    palco = request.args.get("palco")
+    if palco == "None":
+        palco = None
+
+    genere = request.args.get("genere")
+    if genere == "None":
+        genere = None
+        
+    publicPerformances = dao.getFilteredPublicPerformancesWithImages(giorno, genere, palco)
+    print(publicPerformances)
+    return render_template("home.html", performances = publicPerformances, palchi = palchiConsentiti, generi = dao.getGeneresListFromPublicPerformances(), giorni = giorniFestival.keys())
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
