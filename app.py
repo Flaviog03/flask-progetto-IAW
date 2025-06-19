@@ -20,10 +20,10 @@ UPLOAD_FOLDER = os.path.join("static", "images")
 UPLOAD_FOLDER_PERFORMANCES = os.path.join("static", "images", "artists")
 PROFILE_IMG_HEIGHT = 130
 PERFORMANCE_IMG_WIDTH = 300
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ruoli = ["ORGANIZZATORE", "PARTECIPANTE"]
 giorniFestival = {"Venerdì":"Sabato", "Sabato":"Domenica", "Domenica":None}
@@ -270,7 +270,6 @@ def acquista_biglietto():
 def logout():
     logout_user()
     return redirect(url_for("home"))
-
 
 @login_manager.user_loader
 def load_user(user_id):

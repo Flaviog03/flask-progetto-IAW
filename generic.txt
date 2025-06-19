@@ -5,11 +5,9 @@ di contare il biglietto "pass 2 giorni" conteggiando a partire dal "giorno_rifer
 
 `flask. g ` is a global object provided by Flask which can be used to store data and it will be available throughout the lifespan of a single request.
 
-
 Commento in navbar.html
 Affinché session.get('utente_id') funzioni nei template Jinja2 (come in navbar.html incluso da base.html), non devi passare nulla di particolare:
 la variabile session è già disponibile di default nei template Flask, perché Flask la rende accessibile automaticamente.
-
 
 profili:    Utente | Password
 alebellu@gmail.com | PinaSupina
@@ -63,5 +61,4 @@ Simile a questa: https://getbootstrap.com/docs/5.3/examples/album/#
 
 Modidiche al DB
 L'Artista adesso ha il nome unique 
-
 Un artista può avere più di una performance bozza inserita ma una sola performance pubblica assegnata
